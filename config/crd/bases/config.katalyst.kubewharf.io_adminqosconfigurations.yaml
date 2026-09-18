@@ -973,6 +973,33 @@ spec:
                             maximum: 1
                             minimum: 0
                             type: number
+                          numaMemCompactConfig:
+                            description: NumaMemCompactConfig is the config for proactively
+                              compacting memory on idle NUMA nodes
+                            properties:
+                              enableNumaMemCompact:
+                                description: |-
+                                  EnableNumaMemCompact gates proactive compaction so that only NUMA nodes without online
+                                  business (shared_cores/dedicated_cores) pods are compacted. The idle-NUMA path is
+                                  edge-triggered: a NUMA node is compacted once right after its business pods leave.
+                                type: boolean
+                              numaMemCompactIntervalSeconds:
+                                description: |-
+                                  NumaMemCompactIntervalSeconds is the minimum interval between two actual compactions while a
+                                  NUMA node stays idle. Once the interval elapses, order-9 unusable-index degradation is checked
+                                  on each handler cycle and another compaction is triggered only when the configured threshold is
+                                  exceeded. A non-positive value (or unset) disables subsequent compaction until a business pod
+                                  is scheduled onto the node and leaves again.
+                                format: int64
+                                type: integer
+                              order9UnusableIndexDegradedThreshold:
+                                description: |-
+                                  Order9UnusableIndexDegradedThreshold is the minimum increase from the post-compaction order-9
+                                  unusable-index baseline that triggers another compaction after the minimum interval elapses.
+                                maximum: 100
+                                minimum: 0
+                                type: number
+                            type: object
                         type: object
                     type: object
                   reclaimedResourceConfig:
